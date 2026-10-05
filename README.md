@@ -1,158 +1,1157 @@
-# Smart Study Companion
+# 📚 Smart Study Companion
 
-A complete JavaScript EdTech app that turns your own study material into a personalized, source-grounded learning kit. The client is React + Vite; the API is Node.js + Express; Gemini calls and the API key stay on the server; saved sessions and chat use SQLite through Sequelize.
+> **AI-powered, source-grounded study assistant that transforms your own study material into a personalized learning kit.**
 
-## What it does
+Smart Study Companion is a full-stack EdTech web application that helps students learn from their own study materials.
 
-- Accepts text-based PDFs (up to **25 MB**) or pasted study material. Scanned/image-only PDFs are detected and rejected with a clear message; OCR is not included.
-- Offers three learning modes: **Beginner**, **Standard**, and **Exam Revision**.
-- Generates a Study Kit with six sections inside Home:
-  - Summary
-  - Smart Notes
-  - Flashcards
-  - Glossary
-  - Exam Questions
-  - Ask AI, grounded in the saved source material
-- Saves sessions and chat messages in SQLite. History is searchable, filterable, reopenable, paginated, and deletable.
-- Creates a PDF for any section or for the complete kit.
-- Includes a working sample PDF: `client/public/sample_pdfs/computer_networks_intro.pdf`.
-- Provides responsive layouts, keyboard-accessible controls, light/dark appearance, and useful loading, empty, validation, and API error states.
+Users can upload a text-based PDF or paste study material, choose a learning mode, and generate an AI-powered Study Kit containing summaries, smart notes, flashcards, glossary terms, exam questions, and an AI assistant grounded in the submitted source material.
 
-Generated material and direct Ask AI answers are instructed to rely only on the submitted study source. If the source does not contain an answer, Ask AI is instructed to say so instead of filling gaps with outside information. Long source documents are chunked and reduced before generation to keep context bounded.
+The application is designed to keep generated learning content tied to the user's provided study material instead of unnecessarily relying on external information.
 
-## Requirements
+---
 
-- Node.js **20.20+** (Node 22 LTS is also suitable) and npm.
-- A Gemini API key for live generation and Ask AI. The key is optional for installing, building, running the UI, using History, testing PDF parsing/export, and running the test suite.
+## ✨ Features
 
-## Install and run
+### 📄 Study Material Input
 
-The ZIP intentionally does **not** include `node_modules`, a local database, or environment files. Copy the example server environment file before starting the backend.
+- Upload PDF study material
+- Paste study material directly
+- PDF validation and text extraction
+- Maximum upload size configurable up to 25 MB by default
+- Detects PDFs that do not contain readable/selectable text
+- OCR is not included in the current version
 
-### 1. Configure the backend
+### 🤖 AI Study Kit
 
-```bash
-cd smart-study-companion/server
-cp .env.example .env
+Generate a complete learning kit from the submitted material:
+
+- 📝 Summary
+- 📚 Smart Notes
+- 🧠 Flashcards
+- 📖 Glossary
+- 🎯 Exam Questions
+- 💬 Ask AI
+
+### 🎓 Learning Modes
+
+The application provides three learning modes:
+
+| Mode | Purpose |
+|---|---|
+| Beginner | Simplifies concepts for easier understanding |
+| Standard | Balanced learning and revision |
+| Exam Revision | Focuses on exam-oriented preparation |
+
+### 💬 Ask AI
+
+The Ask AI feature allows students to ask questions about their uploaded study material.
+
+The AI is instructed to answer using the saved source material. If the requested information cannot be found in the source, the application is designed to avoid inventing an answer.
+
+### 🕘 Study History
+
+Generated study sessions can be:
+
+- Saved
+- Searched
+- Filtered
+- Reopened
+- Paginated
+- Deleted
+
+Saved chat conversations are also associated with their study sessions.
+
+### 📥 PDF Export
+
+Students can download:
+
+- Summary
+- Smart Notes
+- Flashcards
+- Glossary
+- Exam Questions
+- Complete Study Kit
+
+as PDF documents.
+
+### 🎨 User Interface
+
+The application includes:
+
+- Responsive UI
+- Light/Dark appearance
+- Sidebar navigation
+- Loading states
+- Empty states
+- Validation messages
+- API error handling
+- Keyboard-accessible controls
+
+---
+
+# 🏗️ System Architecture
+
+```text
+                    ┌──────────────────────┐
+                    │      Student         │
+                    │   Web Browser        │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │   React + Vite      │
+                    │      Frontend       │
+                    └──────────┬───────────┘
+                               │
+                         /api requests
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │   Node.js + Express │
+                    │       Backend       │
+                    └──────────┬───────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              │                │                │
+              ▼                ▼                ▼
+       ┌────────────┐   ┌──────────────┐  ┌──────────────┐
+       │ PDF Parser │   │ Gemini AI    │  │   SQLite     │
+       │ pdf-parse  │   │ @google/genai│  │  Sequelize   │
+       └────────────┘   └──────────────┘  └──────────────┘
+              │                │                │
+              └────────────────┼────────────────┘
+                               ▼
+                    ┌──────────────────────┐
+                    │    Study Kit         │
+                    │ Summary              │
+                    │ Smart Notes          │
+                    │ Flashcards            │
+                    │ Glossary              │
+                    │ Exam Questions        │
+                    │ Ask AI                │
+                    └──────────────────────┘
 ```
 
-Edit `server/.env` and set:
+---
 
-```dotenv
-GEMINI_API_KEY=your_gemini_api_key
-```
+# 🛠️ Technology Stack
 
-The default model is `gemini-3.8-flash`. You may change `GEMINI_MODEL` in `server/.env` if needed. Do not put the key in `client/.env`, React code, or a public Vite variable.
+## Frontend
 
-Install and start the API:
+- React 19
+- Vite
+- React Router
+- Axios
+- Lucide React
+- Vitest
+- Testing Library
+- JavaScript / JSX
+- CSS
 
-```bash
-npm ci
-npm run dev
-```
+## Backend
 
-The Express API listens on `http://localhost:5000`. On first startup, Sequelize creates the SQLite tables automatically.
+- Node.js
+- Express.js
+- CORS
+- Multer
+- dotenv
+- PDF Parse
+- PDFKit
+- Sequelize
 
-### 2. Start the React client in a second terminal
+## AI
 
-```bash
-cd smart-study-companion/client
-cp .env.example .env
-npm ci
-npm run dev
-```
+- Google Gemini
+- `@google/genai`
 
-Open the Vite address shown in the terminal (normally `http://localhost:5173`). The browser calls relative `/api` URLs; Vite proxies those requests to Express. `API_PROXY_TARGET` in `client/.env` can be changed if the backend is running elsewhere.
+The Gemini API key is kept on the backend and is never required in the React client.
 
-### 3. Try the sample
+## Database
 
-In Home, choose **PDF upload**, select the included `computer_networks_intro.pdf`, choose a learning mode, then generate the kit. Or use **Paste text** and provide at least 80 readable characters.
+- SQLite
+- Sequelize ORM
 
-Without `GEMINI_API_KEY`, the application reports the missing configuration and does not return placeholder or fabricated AI content. Add a valid key and restart the API to use generation and Ask AI.
+---
 
-## Build and tests
-
-Run each client command from `client/` and each server command from `server/`:
-
-```bash
-# Client
-npm run build
-npm test
-
-# Server
-npm test
-npm audit
-```
-
-The tests cover React control behavior (navigation, PDF selection validation, learning-mode selection, flashcard reveal/advance, glossary search, downloads, History reopen/delete), API responses, PDF extraction/validation, PDF exports, JSON parsing, source chunking, structured kit normalization, history/chat persistence across a closed and reopened Node process, and safe no-key behavior.
-
-**Live Gemini requests were not exercised in this environment because no API key was supplied.** The tests verify that requests fail explicitly with `AI_NOT_CONFIGURED` rather than manufacturing a response.
-
-## Configuration
-
-`server/.env.example` documents the backend settings:
-
-| Variable | Default | Purpose |
-|---|---|---|
-| `GEMINI_API_KEY` | blank | Server-side Gemini API key |
-| `GEMINI_MODEL` | `gemini-3.8-flash` | Gemini model name |
-| `PORT` | `5000` | Express API port |
-| `DATABASE_URL` | `./database/study_companion.db` | SQLite file path; absolute paths are accepted, and `:memory:` is useful for tests |
-| `CLIENT_ORIGINS` | localhost Vite origins | Allowed browser origins in production |
-| `MAX_UPLOAD_MB` | `25` | Maximum PDF upload size |
-| `MAX_DOCUMENT_CHARS` | `2000000` | Maximum cleaned source length |
-| `APP_TIMEZONE` | `Asia/Kolkata` | Time zone used in exported PDF dates |
-
-The client `.env.example` sets `VITE_API_BASE_URL=/api` and `API_PROXY_TARGET=http://127.0.0.1:5000`. The proxy target is used by the Vite server, not browser code.
-
-## Data and privacy
-
-- SQLite is stored by default at `server/database/study_companion.db`; `server/database/` is created if missing. Do not delete this file if you want to keep History.
-- Each saved session includes the submitted text, generated kit, source type, learning mode, timestamps, and saved chat turns. The history list endpoint omits the original source text; a reopened session returns its generated kit and chat.
-- Source text is sent from the backend to Gemini when generating a kit or answering a question. Do not upload material you are not permitted to process with the configured provider.
-- Uploaded files are held in memory for extraction and are not written to an upload directory. Only PDF is accepted; extension, MIME type, file size, and PDF signature are checked.
-- `.env`, SQLite files, uploads, exports, build output, and `node_modules` are ignored by `.gitignore`.
-
-## API reference
-
-All JSON endpoints use `{ "success": true, "data": ... }` on success. Errors use `{ "success": false, "error": "...", "code": "..." }` with an appropriate HTTP status. PDF exports return `application/pdf` as an attachment.
-
-| Method and path | Input | Purpose |
-|---|---|---|
-| `GET /api/health` | — | API status and whether a server-side Gemini key is configured (never returns the key) |
-| `POST /api/study/upload` | `multipart/form-data`, field `file` | Validate and extract text from a PDF; returns extracted text, page count, and filename |
-| `POST /api/study/generate` | JSON `{ text, documentName?, learningMode? }` **or** multipart fields `file`, `learningMode` | Generate a Study Kit and persist a session; returns its ID and kit |
-| `GET /api/study/:id` | — | Reopen a session, including its chat messages |
-| `GET /api/history?q=&limit=40&offset=0` | — | Search and page through saved sessions; returns `sessions`, `hasMore`, and `nextOffset` |
-| `GET /api/history/:id` | — | Fetch a saved session and chat history |
-| `DELETE /api/history/:id` | — | Delete one session and its chat messages |
-| `DELETE /api/history` | — | Clear all sessions and chat messages |
-| `POST /api/chat` | JSON `{ sessionId, question }` | Answer using the saved source and persist the turn only after a successful answer |
-| `POST /api/export/pdf` | JSON `{ sessionId, type }` | Download one section or the complete kit |
-
-Supported PDF `type` values are `summary`, `notes`, `flashcards`, `glossary`, `questions` (or `exam_questions`), and `complete`.
-
-## Project layout
+# 📁 Project Structure
 
 ```text
 smart-study-companion/
+│
 ├── client/
-│   ├── public/sample_pdfs/       # Included demo PDF
-│   └── src/                      # React pages, components, context, API, and tests
-└── server/
-    ├── controllers/              # Request handlers
-    ├── database/                 # Sequelize models, SQLite setup, repository
-    ├── middleware/               # PDF upload and API error handling
-    ├── prompts/                  # Grounded Gemini system/task prompts and schemas
-    ├── routes/                   # Express API routes
-    ├── services/                 # Gemini, PDF parsing/export, chat, chunking, JSON validation
-    └── test/                     # API, persistence, parser, and chunking tests
+│   ├── public/
+│   │   └── sample_pdfs/
+│   │       └── computer_networks_intro.pdf
+│   │
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── AskAI.jsx
+│   │   │   ├── ContentText.jsx
+│   │   │   ├── DownloadButton.jsx
+│   │   │   ├── ErrorBanner.jsx
+│   │   │   ├── ExamQuestions.jsx
+│   │   │   ├── Flashcards.jsx
+│   │   │   ├── GenerateButton.jsx
+│   │   │   ├── Glossary.jsx
+│   │   │   ├── Header.jsx
+│   │   │   ├── HistoryList.jsx
+│   │   │   ├── LearningMode.jsx
+│   │   │   ├── LoadingState.jsx
+│   │   │   ├── Sidebar.jsx
+│   │   │   ├── SmartNotes.jsx
+│   │   │   ├── Summary.jsx
+│   │   │   └── UploadBox.jsx
+│   │   │
+│   │   ├── context/
+│   │   │   └── StudyContext.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── History.jsx
+│   │   │   ├── Home.jsx
+│   │   │   └── Settings.jsx
+│   │   │
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   │
+│   │   ├── test/
+│   │   │   ├── interactions.test.jsx
+│   │   │   └── setup.js
+│   │   │
+│   │   ├── utils/
+│   │   │   └── helpers.js
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   │
+│   ├── .env.example
+│   ├── index.html
+│   ├── package.json
+│   └── package-lock.json
+│
+├── server/
+│   ├── assets/
+│   │   └── sample_pdfs/
+│   │
+│   ├── controllers/
+│   │   ├── chatController.js
+│   │   ├── exportController.js
+│   │   ├── historyController.js
+│   │   └── studyController.js
+│   │
+│   ├── database/
+│   │   ├── database.js
+│   │   ├── models.js
+│   │   └── repository.js
+│   │
+│   ├── middleware/
+│   │   ├── errorHandler.js
+│   │   └── uploadMiddleware.js
+│   │
+│   ├── prompts/
+│   │   ├── chatPrompt.js
+│   │   ├── index.js
+│   │   ├── studyPrompt.js
+│   │   └── systemPrompt.js
+│   │
+│   ├── routes/
+│   │   ├── chatRoutes.js
+│   │   ├── exportRoutes.js
+│   │   ├── historyRoutes.js
+│   │   └── studyRoutes.js
+│   │
+│   ├── services/
+│   │   ├── chatService.js
+│   │   ├── geminiService.js
+│   │   ├── jsonParser.js
+│   │   ├── pdfExportService.js
+│   │   ├── pdfService.js
+│   │   ├── studyGenerator.js
+│   │   └── textChunker.js
+│   │
+│   ├── test/
+│   │   ├── api.integration.test.js
+│   │   ├── persistence.test.js
+│   │   └── services.test.js
+│   │
+│   ├── uploads/
+│   ├── exports/
+│   ├── app.js
+│   ├── config.js
+│   ├── package.json
+│   └── package-lock.json
+│
+├── .gitignore
+└── README.md
 ```
 
-## Troubleshooting
+---
 
-- **“Gemini API key is not configured”**: put the key in `server/.env`, then restart `npm run dev` in the server folder. Never prefix it with `VITE_`.
-- **The Vite page loads but the API is unavailable**: ensure the server is listening on port 5000 and check `API_PROXY_TARGET` in `client/.env`.
-- **PDF has no selectable text**: use a text-based PDF or paste its text. OCR is not part of this version.
-- **PDF is too large / document is too long**: split it into smaller parts. Defaults are 25 MB and 2,000,000 cleaned characters.
-- **Gemini quota/authentication errors**: check the configured key, model access, and account quota; user-facing responses are intentionally generic and the server log contains diagnostic status without printing the key.
+# 🔄 Application Workflow
+
+```text
+User
+  │
+  ▼
+Upload PDF / Paste Text
+  │
+  ▼
+Validate Study Material
+  │
+  ▼
+Extract Text
+  │
+  ▼
+Select Learning Mode
+  │
+  ├── Beginner
+  ├── Standard
+  └── Exam Revision
+  │
+  ▼
+Process / Chunk Source
+  │
+  ▼
+Gemini AI
+  │
+  ▼
+Generate Study Kit
+  │
+  ├── Summary
+  ├── Smart Notes
+  ├── Flashcards
+  ├── Glossary
+  └── Exam Questions
+  │
+  ▼
+Save Session
+  │
+  ├── SQLite
+  └── Chat History
+  │
+  ▼
+Student Learning
+  │
+  ├── Read
+  ├── Revise
+  ├── Ask AI
+  └── Download PDF
+```
+
+---
+
+# 🔐 Source-Grounded AI
+
+A major design goal of Smart Study Companion is to keep AI-generated learning content grounded in the user's submitted study material.
+
+The backend provides the source material to the AI generation and chat services.
+
+The Ask AI workflow uses the saved source associated with the study session.
+
+This helps reduce answers that are unrelated to the student's material.
+
+If the source does not contain enough information to answer a question, the system is instructed to communicate that instead of intentionally fabricating information.
+
+> Note: AI-generated responses can still contain mistakes. Students should verify important academic information against their original material.
+
+---
+
+# 📄 PDF Processing
+
+The current version supports **text-based PDFs**.
+
+The processing flow is:
+
+```text
+PDF
+ │
+ ▼
+File Validation
+ │
+ ├── Extension check
+ ├── MIME check
+ ├── File size check
+ └── PDF signature check
+ │
+ ▼
+Text Extraction
+ │
+ ▼
+Text Validation
+ │
+ ▼
+Document Processing
+ │
+ ▼
+AI Study Kit Generation
+```
+
+### Current limitations
+
+- Scanned/image-only PDFs are not processed.
+- OCR is not included.
+- PDFs must contain readable/selectable text.
+- Very large documents may need to be split.
+
+---
+
+# 🧠 Large Document Processing
+
+Long study materials are processed using document chunking and reduction before final generation.
+
+Conceptually:
+
+```text
+Large Document
+      │
+      ▼
+Text Cleaning
+      │
+      ▼
+Chunking
+      │
+      ▼
+Chunk Processing
+      │
+      ▼
+Digest / Reduction
+      │
+      ▼
+Final Study Kit Generation
+```
+
+This keeps the amount of source text passed into the generation workflow manageable.
+
+---
+
+# 💾 Data Storage
+
+SQLite is used for local persistence.
+
+The database stores information required for saved study sessions and conversations.
+
+A typical local database path is:
+
+```text
+server/database/study_companion.db
+```
+
+The database is intentionally excluded from Git because it contains local/runtime data.
+
+When another developer clones the project and starts the backend, Sequelize initializes the required database structure.
+
+---
+
+# 🔑 Environment Configuration
+
+## Backend
+
+Create:
+
+```text
+server/.env
+```
+
+from:
+
+```text
+server/.env.example
+```
+
+Example:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-flash-latest
+PORT=5000
+DATABASE_URL=./database/study_companion.db
+CLIENT_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+MAX_UPLOAD_MB=25
+MAX_DOCUMENT_CHARS=2000000
+APP_TIMEZONE=Asia/Kolkata
+```
+
+### Environment variables
+
+| Variable | Default | Description |
+|---|---|---|
+| `GEMINI_API_KEY` | — | Gemini API key used by the backend |
+| `GEMINI_MODEL` | `gemini-flash-latest` | Gemini model used for generation |
+| `PORT` | `5000` | Express server port |
+| `DATABASE_URL` | `./database/study_companion.db` | SQLite database location |
+| `CLIENT_ORIGINS` | localhost origins | Allowed browser origins |
+| `MAX_UPLOAD_MB` | `25` | Maximum PDF upload size |
+| `MAX_DOCUMENT_CHARS` | `2000000` | Maximum cleaned source characters |
+| `APP_TIMEZONE` | `Asia/Kolkata` | Timezone used for exported PDF dates |
+
+---
+
+## Frontend Environment
+
+Create:
+
+```text
+client/.env
+```
+
+Example:
+
+```env
+VITE_API_BASE_URL=/api
+API_PROXY_TARGET=http://127.0.0.1:5000
+```
+
+`API_PROXY_TARGET` is used by the Vite development server to proxy `/api` requests to the Express backend.
+
+---
+
+# ⚠️ API Key Security
+
+**Never commit a real Gemini API key to GitHub.**
+
+The following files must not be committed:
+
+```text
+server/.env
+client/.env
+```
+
+The repository should contain only example configuration files:
+
+```text
+server/.env.example
+client/.env.example
+```
+
+Example files must contain placeholders, not real credentials.
+
+For example:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+Do not use:
+
+```env
+GEMINI_API_KEY=REAL_API_KEY
+```
+
+---
+
+# 🚀 Installation
+
+## Prerequisites
+
+Install:
+
+- Node.js 20+
+- npm
+- Git
+
+Node.js 22 LTS is recommended.
+
+Check versions:
+
+```bash
+node --version
+npm --version
+git --version
+```
+
+---
+
+# 📥 Clone the Repository
+
+```bash
+git clone https://github.com/AJAISELVAMM/smart-study.git
+```
+
+Enter the project:
+
+```bash
+cd smart-study
+```
+
+---
+
+# ⚙️ Backend Setup
+
+Open a terminal:
+
+```bash
+cd server
+```
+
+Install dependencies:
+
+```bash
+npm ci
+```
+
+Create the environment file.
+
+### Windows CMD
+
+```cmd
+copy .env.example .env
+```
+
+### PowerShell
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Edit:
+
+```text
+server/.env
+```
+
+and add your own Gemini API key:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+Start the backend:
+
+```bash
+npm run dev
+```
+
+The API runs on:
+
+```text
+http://localhost:5000
+```
+
+Health check:
+
+```text
+http://localhost:5000/api/health
+```
+
+---
+
+# 🖥️ Frontend Setup
+
+Open a second terminal.
+
+From the project root:
+
+```bash
+cd client
+```
+
+Install dependencies:
+
+```bash
+npm ci
+```
+
+Create the environment file if required:
+
+### Windows CMD
+
+```cmd
+copy .env.example .env
+```
+
+### PowerShell
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Start the frontend:
+
+```bash
+npm run dev
+```
+
+Vite normally runs on:
+
+```text
+http://localhost:5173
+```
+
+Open that address in your browser.
+
+---
+
+# ▶️ Running the Complete Application
+
+Two terminals are recommended.
+
+### Terminal 1 — Backend
+
+```bash
+cd server
+npm ci
+npm run dev
+```
+
+### Terminal 2 — Frontend
+
+```bash
+cd client
+npm ci
+npm run dev
+```
+
+Then open:
+
+```text
+http://localhost:5173
+```
+
+---
+
+# 🧪 Testing
+
+## Frontend Tests
+
+From:
+
+```text
+client/
+```
+
+Run:
+
+```bash
+npm test
+```
+
+The frontend test suite covers important interaction behavior such as:
+
+- Navigation
+- PDF selection
+- Learning mode selection
+- Flashcard interactions
+- Glossary search
+- Download actions
+- History interactions
+
+---
+
+## Backend Tests
+
+From:
+
+```text
+server/
+```
+
+Run:
+
+```bash
+npm test
+```
+
+The backend tests cover areas including:
+
+- API behavior
+- PDF processing
+- PDF validation
+- PDF export
+- JSON parsing
+- Text chunking
+- Study-kit normalization
+- Database persistence
+- Chat persistence
+- No-key configuration behavior
+
+---
+
+# 🏗️ Production Build
+
+Build the frontend:
+
+```bash
+cd client
+npm run build
+```
+
+Preview the production build:
+
+```bash
+npm run preview
+```
+
+Start the backend:
+
+```bash
+cd server
+npm start
+```
+
+---
+
+# 🔌 API Reference
+
+Base URL:
+
+```text
+http://localhost:5000/api
+```
+
+## Health
+
+```http
+GET /api/health
+```
+
+Checks backend status and reports whether the Gemini integration is configured.
+
+The API does not return the actual API key.
+
+---
+
+## Upload PDF
+
+```http
+POST /api/study/upload
+```
+
+Content type:
+
+```text
+multipart/form-data
+```
+
+Field:
+
+```text
+file
+```
+
+Used to validate and extract text from an uploaded PDF.
+
+---
+
+## Generate Study Kit
+
+```http
+POST /api/study/generate
+```
+
+Can receive study text or a PDF upload together with the selected learning mode.
+
+Example JSON:
+
+```json
+{
+  "text": "Your study material...",
+  "documentName": "Computer Networks",
+  "learningMode": "standard"
+}
+```
+
+The response contains the generated Study Kit and saved session ID.
+
+---
+
+## Get Study Session
+
+```http
+GET /api/study/:id
+```
+
+Retrieves a saved study session.
+
+---
+
+## Search History
+
+```http
+GET /api/history?q=&limit=40&offset=0
+```
+
+Used to search and paginate saved study sessions.
+
+---
+
+## Get History Item
+
+```http
+GET /api/history/:id
+```
+
+Retrieves a saved study session and its associated chat history.
+
+---
+
+## Delete History Item
+
+```http
+DELETE /api/history/:id
+```
+
+Deletes a specific study session.
+
+---
+
+## Delete All History
+
+```http
+DELETE /api/history
+```
+
+Clears saved study sessions and associated chat messages.
+
+---
+
+## Ask AI
+
+```http
+POST /api/chat
+```
+
+Example:
+
+```json
+{
+  "sessionId": 1,
+  "question": "Explain the main concept in simple terms."
+}
+```
+
+The question is answered using the source material associated with the saved study session.
+
+---
+
+## Export PDF
+
+```http
+POST /api/export/pdf
+```
+
+Supported export types:
+
+```text
+summary
+notes
+flashcards
+glossary
+questions
+exam_questions
+complete
+```
+
+The endpoint returns a PDF document.
+
+---
+
+# 📦 Important Git Files
+
+The following should be committed:
+
+```text
+client/src/
+client/public/
+client/package.json
+client/package-lock.json
+
+server/controllers/
+server/database/*.js
+server/middleware/
+server/prompts/
+server/routes/
+server/services/
+server/test/
+server/app.js
+server/config.js
+server/package.json
+server/package-lock.json
+
+client/.env.example
+server/.env.example
+
+.gitignore
+README.md
+```
+
+The following should NOT be committed:
+
+```text
+node_modules/
+.env
+*.db
+*.sqlite
+*.sqlite3
+dist/
+build/
+uploads/
+exports/
+logs/
+temporary/generated files
+```
+
+---
+
+# 🔒 Privacy and Security
+
+Smart Study Companion processes study material submitted by the user.
+
+Important considerations:
+
+- Keep API keys on the backend.
+- Do not expose Gemini credentials in frontend code.
+- Do not commit `.env` files.
+- Do not commit local SQLite databases.
+- Do not upload confidential study material to public repositories.
+- Review third-party AI provider policies before processing sensitive documents.
+
+Uploaded PDFs are processed for text extraction and are not intended to be stored permanently as repository files.
+
+---
+
+# 🧩 Current Limitations
+
+The current version has some intentional limitations:
+
+1. OCR is not included.
+2. Scanned/image-only PDFs are not supported.
+3. A valid Gemini API key is required for live AI generation.
+4. AI responses may occasionally contain inaccuracies.
+5. SQLite is intended for local/small-scale persistence.
+6. Large documents may need to be split depending on their size and content.
+7. Production deployment requires appropriate environment variables and infrastructure configuration.
+
+---
+
+# 🛠️ Troubleshooting
+
+## Gemini API key error
+
+If the application reports that Gemini is not configured:
+
+1. Open:
+
+```text
+server/.env
+```
+
+2. Add:
+
+```env
+GEMINI_API_KEY=your_real_key
+```
+
+3. Save the file.
+4. Restart the backend.
+
+Do not put the key in:
+
+```text
+client/.env
+```
+
+and do not prefix it with `VITE_`.
+
+---
+
+## Frontend cannot connect to backend
+
+Make sure the backend is running:
+
+```bash
+cd server
+npm run dev
+```
+
+Verify:
+
+```text
+http://localhost:5000/api/health
+```
+
+Then check:
+
+```env
+API_PROXY_TARGET=http://127.0.0.1:5000
+```
+
+in:
+
+```text
+client/.env
+```
+
+---
+
+## PDF cannot be processed
+
+Make sure:
+
+- The file is a valid PDF.
+- The PDF contains selectable/readable text.
+- The file is within the configured size limit.
+- The PDF is not an image-only scanned document.
+
+OCR is not included in the current version.
+
+---
+
+## History is empty
+
+History is stored in:
+
+```text
+server/database/study_companion.db
+```
+
+If the database is deleted, previous local history will no longer be available.
+
+---
+
+# 🎯 Project Goal
+
+Smart Study Companion aims to make studying more efficient by combining:
+
+```text
+Student Material
+       ↓
+AI Processing
+       ↓
+Personalized Learning Kit
+       ↓
+Understand
+       ↓
+Practice
+       ↓
+Revise
+       ↓
+Ask Questions
+       ↓
+Export & Review
+```
+
+Instead of searching through large study documents manually, students can use their own material to generate structured learning resources in one place.
+
+---
+
+# 📌 Project Status
+
+**Status:** Active Development
+
+The current version includes the core frontend, backend, AI generation workflow, PDF processing, local persistence, history management, chat functionality, PDF export, and automated tests.
+
+---
+
+# 👨‍💻 Repository
+
+GitHub:
+
+https://github.com/AJAISELVAMM/smart-study
+
+---
+
+## 📄 License
+
+No open-source license has been specified for this project yet.
+
+Until a license is added, the repository should not be assumed to grant permission to reuse, modify, or redistribute the code.
