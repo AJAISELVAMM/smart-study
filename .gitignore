@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Build outputs and cache
+dist/
+build/
+**/dist/
+**/build/
+.cache/
+*.cache
+client/.vite/
+
+# Databases (SQLite)
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+server/database/*.db
+server/database/*.db-shm
+server/database/*.db-wal
+server/database/*.sqlite
+server/database/*.sqlite3
+!server/database/.gitkeep
+
+# Uploads, exports, generated files, and temp
+temp/
+tmp/
+generated/
+server/exports/*
+!server/exports/.gitkeep
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Logs and coverage
+*.log
+logs/
+coverage/
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

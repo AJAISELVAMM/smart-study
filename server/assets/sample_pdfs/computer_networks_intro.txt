@@ -1,0 +1,45 @@
+INTRODUCTION TO COMPUTER NETWORKS
+
+A computer network is a group of computing devices connected so they can exchange data and share resources. A network may connect computers in one room, devices across a campus, or systems across the world. Network links can use copper cable, optical fibre, or wireless radio signals. The rules that allow devices to communicate are called protocols.
+
+NETWORK SCOPE
+
+A Personal Area Network (PAN) connects devices around one person, such as a phone and a wireless headset. A Local Area Network (LAN) connects devices in a limited area such as a home, laboratory, office, or school. A Wide Area Network (WAN) connects networks across large geographical areas. The Internet is a global system of interconnected networks; it is not a single computer or a single LAN.
+
+NETWORK TOPOLOGY
+
+Topology describes how network devices and links are arranged. In a star topology, each device connects to a central switch or hub. A failure in one endpoint cable usually affects that endpoint, while failure of the central device can interrupt the whole star. In a bus topology, devices share a main communication line; a break in that line can disrupt communication. In a ring topology, devices form a loop. A mesh topology provides multiple paths between devices, which can improve resilience but requires more links.
+
+THE OSI REFERENCE MODEL
+
+The Open Systems Interconnection (OSI) model organizes network communication into seven conceptual layers. It is a reference model for understanding and troubleshooting communication; real network protocols do not always map perfectly to one layer.
+
+Layer 1 — Physical: carries raw bits over a physical medium. Examples of concerns include connectors, signal levels, and transmission media.
+Layer 2 — Data Link: transfers frames between devices on the same local link and uses link-level addressing. Ethernet is commonly associated with this layer.
+Layer 3 — Network: moves packets between networks using logical addressing and routing. Internet Protocol (IP) operates at this layer.
+Layer 4 — Transport: supports communication between processes and can provide reliability, ordering, or flow control. Transmission Control Protocol (TCP) and User Datagram Protocol (UDP) are transport protocols.
+Layer 5 — Session: coordinates the establishment, management, and termination of communication sessions.
+Layer 6 — Presentation: represents, translates, compresses, or encrypts data so applications can interpret it consistently.
+Layer 7 — Application: provides network services used directly by applications. HTTP, DNS, and SMTP are examples of application-layer protocols.
+
+When data travels down the sending system's stack, each layer may add control information. At the receiving system, the corresponding layers interpret and remove that information. This process is called encapsulation and decapsulation. The model helps locate a problem: a damaged cable is a physical-layer issue, while an incorrect IP route is a network-layer issue.
+
+ADDRESSING AND ROUTING
+
+An IP address identifies a network interface logically so packets can be delivered across networks. Routers examine network-layer information and choose a path toward a destination. A router forwards packets between different networks; a network switch commonly forwards frames within a local network using link-layer addresses. The address identifies where traffic should go, while routing determines a path through interconnected networks.
+
+TCP AND UDP
+
+TCP is connection-oriented. It establishes a connection and provides ordered, reliable delivery with retransmission when data is lost. This reliability adds control overhead. UDP sends datagrams without establishing the same kind of connection and does not itself guarantee delivery, ordering, or retransmission. UDP has less protocol overhead and is useful when an application can tolerate some loss or needs timely delivery. Neither protocol is universally better; the choice depends on application requirements.
+
+DNS AND HTTP
+
+The Domain Name System (DNS) maps human-readable domain names to network information such as IP addresses. A client can use DNS before contacting a named service. The Hypertext Transfer Protocol (HTTP) defines request-and-response communication used by web applications. HTTPS is HTTP protected with encryption using Transport Layer Security (TLS). DNS performs name resolution; HTTP defines web request and response messages.
+
+NETWORK SECURITY BASICS
+
+Confidentiality means that information is available only to authorized parties. Integrity means that information has not been changed without authorization. Availability means that systems and data remain accessible when needed. Encryption helps protect confidentiality, while authentication verifies an identity. Access control determines what an authenticated user or system is allowed to do. These are related but distinct security goals.
+
+KEY TAKEAWAYS
+
+A protocol is a set of communication rules. The OSI model has seven conceptual layers and is useful for describing network functions and troubleshooting. IP provides logical addressing and routing across networks. TCP emphasizes reliable, ordered delivery; UDP does not provide those guarantees itself. DNS resolves names, while HTTP defines web communication. Network design involves trade-offs among cost, performance, resilience, and security.
